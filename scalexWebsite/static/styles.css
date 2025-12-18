@@ -1,0 +1,1190 @@
+/* Header row to arrange logo and heading in the same row */
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: relative;
+    position: relative;
+}
+
+/* Logo on the left */
+.header-row .logo {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Ensure the logo and heading are aligned properly */
+.header-row .logo img {
+    width: 250px; /* Adjust the width as needed */
+}
+
+.header-row .h1_heading {
+    font-size: 32px;
+    color: white;
+    margin: 0;
+    padding-left: 20px;
+}
+
+.header-row::after {
+    content: '';
+    flex: 1;
+}
+
+/* Top background with green color */
+.top-background {
+    background-color: #097879;
+    height: 100px;
+    position: relative;
+    z-index: 1;
+}
+
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: white;
+    height: 100vh;
+    position: relative;
+}
+
+/* Smooth SVG curve */
+.wave-divider {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    background-color: white;
+    z-index: 2; /* Make sure the curve is above the left panel */
+}
+
+.wave-divider svg {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+/* Form container with shadow */
+.container {
+    max-width: 600px;
+    margin: 50px auto 50px auto;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.45);
+    z-index: 1;
+    position: relative;
+    bottom: 10px;
+}
+
+/* analysis container with shadow */
+.container_analysis {
+    max-width: 90vw;
+    width: 100%;
+    margin: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.45);
+    position: relative;
+    bottom: 10px;
+}
+
+/* Header styles */
+h1 {
+    text-align: center;
+    color: #fff;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Style for the main analysis heading */
+.h1_analysis {
+    text-align: center;
+    /* color: #333; */
+    color: #097879;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Style for the main analysis heading */
+.h1_heading {
+    text-align: center;
+    color: #fff;
+    font-size: 34px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.h1-error {
+    text-align: center;
+    color: #111;
+    font-size: 34px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Style for the numbered main sections */
+.section-title {
+    text-align: left;
+    color: #333;
+    font-size: 24px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Style for the subsections with Roman numerals */
+.subsection-title {
+    text-align: left;
+    color: #666;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+/* Style for the Roman numerals (italic) */
+.subsection-title i {
+    font-style: italic;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+/* Style for the chart */
+.chart {
+    width: 100%;
+    height: auto;
+}
+
+/* Form input fields */
+input[type="email"],
+input[type="password"],
+input[type="file"],
+input[type="date"],
+input[type="text"],
+button {
+    width: 100%;
+    max-width: 550px;
+    padding: 10px;
+    font-size: 16px;
+    margin: 15px;
+    border-radius: 120px;
+    color: black;
+    cursor: pointer;
+}
+
+/* Form container */
+form button {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically if needed */
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto;
+    margin-top: 15px; /* Add space above the button */
+    width: 30%; /* Adjust width to make it smaller if needed */
+}
+
+/* Adjust the button */
+button {
+    align-self: center; /* Ensure button stays centered */
+}
+
+
+/* Button styles */
+button {
+    background-color: #097879;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    align-self: center;
+}
+
+button:hover {
+    background-color: #065f5f;
+}
+
+/* Logo */
+.logo img {
+    width: 200px;
+    height: auto;
+}
+
+/* Smaller logo in the top-left corner */
+.logo_analysis {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 250px;
+    height: auto;
+}
+
+/* Loading Spinner */
+.loader {
+    border: 10px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 10px solid #097879;
+    width: 80px;
+    height: 80px;
+    animation: spin 1.5s linear infinite;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Overlay to block user interactions while loading */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 999;
+    display: none;
+}
+
+/* KPI Grid */
+.kpi-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.kpi-box {
+    flex: 1 1 18%;
+    background-color: #eaf2f8;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure the last row is left-aligned */
+.kpi-container .kpi-box:nth-child(odd):nth-last-child(1),
+.kpi-container .kpi-box:nth-child(odd):nth-last-child(2),
+.kpi-container .kpi-box:nth-child(odd):nth-last-child(3) {
+    justify-content: flex-start;
+}
+
+.kpi-box h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.kpi-box p {
+    margin: 5px 0 0 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #0fa992;
+}
+
+/* Styles for analysis buttons and hover effect */
+.analysis-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.analysis-section {
+    position: relative;
+}
+
+.main-analysis-btn {
+    background-color: #097879;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.sub-analysis {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #eaf2f8;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-section:hover .sub-analysis {
+    display: block;
+}
+
+.sub-analysis a {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #097879;
+}
+
+.sub-analysis a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Arrange buttons in 2 columns */
+.analysis-sections-two-columns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.analysis-section-two-columns {
+    flex: 1 1 calc(50% - 20px); /* Ensures two columns with spacing between */
+    position: relative;
+}
+
+.main-analysis-btn-two-columns {
+    background-color: #097879;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 100%; /* Ensures the button takes full width of the section */
+}
+
+.sub-analysis-two-columns {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #eaf2f8;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-section-two-columns:hover .sub-analysis-two-columns {
+    display: block;
+}
+
+.sub-analysis-two-columns a {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #097879;
+}
+
+.sub-analysis-two-columns a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Style for the Analysis & Insights heading */
+.analysis-insights-heading {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+/* Top background with green color */
+.analysis-insights-top-background {
+    background-color: #097879;
+    height: 130px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Main layout with side panel and content */
+.layout-container-new {
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    max-height: 100vh; /* Keep height unchanged for better flexibility */
+    height: 100vh;
+    margin-top: 20px; /* Move the entire layout up */
+}
+
+/* Left Panel Styling with Background Extension */
+.side-panel-new {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 100%;
+    /* background-color: #097879; */
+    background-color: #EAF2F8;
+    color: black;
+    padding: 10px;
+    /* border-top: 0.5px solid #ddd;
+    border-right: 0.5px solid #ddd; */
+    margin-top: 0px; /* Moving the panel upwards */
+    padding-top: 130px;  /* Ensures content is aligned with right panel */
+    z-index: 1; /* Ensure it's below the curve */
+    transition: width 0.5s ease;
+    justify-content: center;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2); /* Horizontal shadow */
+}
+
+/* When the panel is expanded on hover */
+.side-panel-new:hover {
+    width: 25%; /* The full width of the side panel when expanded */
+}
+
+/* Content inside the panel should be hidden when collapsed */
+.side-panel-new .full-panel-content {
+    opacity: 0;
+    transition: display 0.5s ease;
+}
+
+/* Show content when the panel is hovered */
+.side-panel-new:hover .full-panel-content {
+    opacity: 1;
+}
+
+.full-panel-content h2 {
+    padding-top: 20px;
+}
+
+/* Style for the small vertical tab when the panel is collapsed */
+.small-panel-tab {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50px;
+    height: 100%; /* Extend background to full height */
+    margin-top: 170px;
+    padding-left: 5px;
+    /* background-color: #097879;
+    color: white; */
+    background-color: #EAF2F8;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.5s ease; /* Add smooth 360-degree rotation */
+    /* transform: rotate(180deg); */
+}
+
+
+/* Rotate the arrow when hovered (indicating expansion) */
+.side-panel-new:hover .small-panel-tab::after {
+    transform: rotate(180deg) translateY(-50%); /* Rotate arrow to point left */
+}
+
+.small-panel-tab:hover {
+    transform: rotate(360deg); /* Rotate the panel 360 degrees */
+}
+
+.side-panel-new:hover .small-panel-tab {
+    opacity: 0; 
+    display: none; /* Hide the small panel text and arrow when expanded */
+}
+
+
+/* Adjust heading in the left panel to align with right section */
+.side-panel-new h2 {
+    position: relative;
+    z-index: 2; /* Ensure the text is above the background */
+    margin-top: 0;
+    padding-bottom: 20px;
+    color: black;
+}
+
+.content-panel-new {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    margin-left: 40px;
+    overflow-y: auto;
+}
+
+/* Collapsible section */
+.collapsible-section {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    /* background-color: #097879;
+    color: white; */
+    background-color: #EAF2F8;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.collapsible-header:hover {
+    /* Lighter color on hover */
+    /* background-color: #065d5c; */
+    background-color: #097879;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.collapsible-header:active {
+    /* Darker color when clicked */
+    /* background-color: #065d5c;  */
+    background-color: #097879;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.collapsible-label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.arrow {
+    font-size: 18px;
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+/* Sub-analysis collapsible style */
+.sub-analysis-collapsible {
+    padding-left: 20px;
+    background-color: #EDEDE9;
+    /* border-left: 3px solid #ddd; */
+    margin: 0;
+    padding: 0;
+    max-height: 0; /* Initially collapsed */
+    opacity: 0; /* Initially hidden */
+    overflow: hidden; /* Hide overflowing content */
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.sub-analysis-collapsible.show {
+    max-height: 500px; /* Set large enough for expanding content */
+    opacity: 1; /* Fully visible */
+    padding: 10px 0 10px 20px;
+    margin-bottom: 10px;
+}
+
+/* Make cursor a pointer when hovering over checkboxes and labels */
+.sub-analysis-collapsible-item,
+.sub-analysis-collapsible-item input,
+.sub-analysis-collapsible-item label {
+    cursor: pointer; /* Changes mouse pointer to hand when hovering */
+}
+
+.sub-analysis-collapsible-item:hover {
+    background-color: #d6ccc2;
+}
+
+.arrow.rotate {
+    transform: rotate(90deg);
+}
+
+/* Checkbox styles */
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+* iframe {
+    padding: 20px;
+    margin: 20px;
+}
+
+#chart-container-new {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Submit Button */
+/* Container for submit button */
+.submit-button-container {
+    display: none; /* Hidden when the sidebar is collapsed */
+    justify-content: center; /* Center the button horizontally */
+    margin: 20px 0; /* Add some space around the button */
+}
+
+/* Submit button styling */
+.submit-button {
+    background-color: #097879; /* Match the sidebar color */
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #065d5c; /* Darker shade on hover */
+}
+
+/* Show the button when the sidebar is expanded */
+.side-panel-new:hover .submit-button-container {
+    display: flex; /* Make it visible */
+}
+
+/* Ensure submit button is hidden in small panel view */
+.small-panel-tab:hover .submit-button-container {
+    display: none;
+}
+
+
+/* Popup overlay */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's above other content */
+}
+
+/* Popup content box */
+.popup-content {
+    background-color: #ffffff;
+    width: 600px;
+    max-height: 650px; /* Limit the height of the popup */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    overflow-y: auto; /* Allow scrolling for entire content if needed */
+}
+
+/* Button container styling */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+/* Popup buttons styling */
+.popup-content button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #097879;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popup-content button:hover {
+    background-color: #065d5c; /* Darker shade on hover */
+}
+
+/* Adjust spacing after the section heading */
+.popup-content h4 {
+    padding-left: 20px;
+    margin-top: 5px; /* Decrease the top margin for section headings */
+    margin-bottom: 2px; /* Decrease the bottom margin for section headings */
+    font-size: 18px; /* Optional: Adjust the font size */
+}
+
+/* Adjust spacing between analysis list items */
+.popup-content ul li {
+    padding-left: 20px;
+    margin-bottom: 2px; /* Add space between list items */
+    line-height: 1.5; /* Optional: Adjust line height for better readability */
+}
+
+/* CSS for Section Icons */
+.section-icon {
+    fill: #000; /* Change fill color */
+    width: 22px; /* Adjust width */
+    height: 22px; /* Adjust height */
+    transition: fill 0.3s ease;
+}
+
+.collapsible-header:hover .section-icon {
+    fill: #fff; /* Change color on hover */
+}
+
+/* Icon and text wrapper */
+.icon-text-wrapper {
+    display: flex;
+    align-items: center; /* Align icon and text vertically */
+    gap: 15px; /* Add space between icon and text */
+}
+
+/* Styling for the icon wrapper */
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 50px;
+}
+
+/* Styling for the text and arrow wrapper */
+.text-arrow-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%; /* Remaining space for text and arrow */
+    opacity: 0; /* Hide text and arrow by default */
+    transition: opacity 0.3s ease, width 0.3s ease; /* Smooth transition */
+}
+
+/* Show text and arrow when side panel is expanded */
+.side-panel-new:hover .text-arrow-wrapper {
+    opacity: 1;
+}
+
+/* Icon wrapper inside small panel tab */
+.small-panel-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* Arrow inside small panel tab */
+.small-panel-arrow {
+    font-size: 18px;
+    margin-left: 5px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+/* Change arrow rotation and position on hover */
+.side-panel-new:hover .small-panel-arrow {
+    transform: rotate(90deg); /* Rotate arrow to indicate expansion */
+}
+
+/* Adjust the visibility and position of icons and text */
+.side-panel-new:hover .small-panel-tab {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row; /* Align items horizontally when expanded */
+    align-items: center;
+    transition: width 0.3s ease;
+}
+
+.side-panel-new:hover .small-panel-icon-wrapper {
+    justify-content: flex-start;
+    margin-left: 10px; /* Move icon slightly right */
+}
+
+.side-panel-new:hover .small-panel-arrow {
+    display: none; /* Hide arrow in expanded state */
+}
+
+.small-panel-tab-menu-button {
+    margin-top: -20px;
+}
+
+/* Prevent text-wrapping for labels and text elements inside the side panel */
+.collapsible-header,
+.collapsible-label,
+.text-arrow-wrapper,
+.full-panel-content {
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden; /* Ensures text doesn't overflow the container */
+    text-overflow: ellipsis; /* Adds ellipsis if text is too long */
+}
+
+/* Ensure text remains on a single line without wrapping on hover */
+.side-panel-new:hover .text-arrow-wrapper {
+    opacity: 1; /* Show text on hover */
+    white-space: nowrap; /* Ensure no wrapping on hover */
+}
+
+.header-actions {
+    position: absolute;
+    right: 10px;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    row-gap: 1px;
+}
+
+.app-id {
+    font-size: 12px;
+    color: #097879;
+    font-weight: bold;
+    padding: 8px 12px;
+}
+
+#app-id-display {
+    max-width: 200px; 
+}
+
+#app-id {
+    display: inline;
+    white-space: nowrap;
+}
+
+.logout-button {
+    background-color: #ff4d4d; /* Red logout button */
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.logout-button:hover {
+    background-color: #d93636; /* Darker red on hover */
+}
+
+.side-panel-new.expanded {
+    width: 400px;
+}
+
+/* Tablet styles */
+@media (max-width: 1024px) {
+    .header-row .logo img {
+        width: 185px; /* Smaller logo for tablets */
+    }
+
+    .header-row .h1_heading {
+        font-size: 24px; /* Smaller font size for tablets */
+    }
+
+    .top-background {
+        height: 75px;
+    }
+
+    .analysis-insights-top-background {
+        height: 110px;
+    }
+
+    .analysis-insights-heading {
+        font-size: 20px;
+    }
+
+    .header-actions {
+        padding-top: 15px;
+    }
+
+    .container {
+        max-width: 600px;
+    }
+        
+    .container p, a {
+        font-size: 12px;
+    }
+
+    form label {
+        font-size: 12px; /* Smaller label text for tablets */
+    }
+
+    form input[type="email"],
+    form input[type="password"],
+    form input[type="file"],
+    form input[type="date"],
+    form input[type="text"] {
+        width: 85%;
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    form button {
+        font-size: 13px; /* Reduce font size for inputs and buttons */
+        padding: 8px;
+    }
+
+    .h1_analysis {
+        font-size: 18px; /* Slightly smaller heading for tablets */
+    }
+
+    .side-panel-new.expanded {
+        width: 350px;
+    }
+
+    .full-panel-content h2 {
+        font-size: 1rem; /* Reduce font size for smaller screens */
+        font-weight: 600;
+    }
+
+    .collapsible-label, .arrow {
+        font-size: .85rem;
+    }
+
+    .sub-analysis-collapsible-item label {
+        font-size: .8rem;
+    }
+
+    .icon-wrapper svg,
+    .small-panel-tab-menu-button svg,
+    .small-panel-icon-wrapper svg {                               
+        width: 22px;
+        height: 22px;
+    }
+
+    .submit-button-container button {
+        margin-left: 45px;
+        margin-right: 45px;
+        font-size: .9rem;
+    }
+
+    .popup-content {
+        width: 350px;
+    }
+
+    .popup-content h3 {
+        font-size: .9rem;
+    }
+
+    .popup-content h4 {
+        font-size: .85rem;
+    }
+
+    .popup-content ul,
+    .popup-content button {
+        font-size: .8rem;
+    }
+
+    .kpi-box h2 {
+        font-size: 16px;
+    }
+    
+    .kpi-box p {
+        font-size: 18px;
+    }
+
+    .subsection-title {
+        font-size: 18px;
+    }
+
+    .subsection-title i {
+        font-size: 16px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .header-row {
+        flex-direction: column; /* Stack logo and heading vertically */
+        gap: 5px;
+    }
+
+    .header-row .logo img {
+        width: 150px; /* Smaller logo for mobile */
+    }
+
+    .analysis-insights-top-background {
+        height: 120px;
+    }
+
+    .header-row .h1_heading {
+        font-size: 18px; /* Smaller font size for mobile */
+    }
+
+    .top-background {
+        height: 85px;
+    }
+
+    .analysis-insights-heading {
+        font-size: 16px;
+    }
+
+    .header-actions {
+        padding-top: 0px;
+    }
+
+    .container {
+        max-width: 400px;
+        font-size: 12px;
+    }
+    
+    .container p, a {
+        font-size: 10px;
+    }
+
+    form label {
+        font-size: 10px; /* Smaller label text for tablets */
+    }
+
+    form input[type="email"],
+    form input[type="password"],
+    form input[type="file"],
+    form input[type="date"],
+    form input[type="text"] {
+        width: 85%;
+        font-size: 10px;
+        padding: 6px;
+    }
+
+    form button {
+        font-size: 12px; /* Reduce font size for inputs and buttons */
+        padding: 8px;
+    }
+
+    .h1_analysis {
+        font-size: 13px; /* Slightly smaller heading for tablets */
+    }
+
+    .small-panel-arrow {
+        font-size: 15px;
+    }
+
+    .side-panel-new {
+        width: 35px;
+    }
+    
+    .side-panel-new.expanded {
+        width: 300px;
+    }
+    
+    .full-panel-content h2 {
+        font-size: .85rem; /* Reduce font size for smaller screens */
+        font-weight: 600;
+    }
+
+    .collapsible-label, .arrow {
+        font-size: .75rem;
+    }
+
+    .sub-analysis-collapsible-item label {
+        font-size: .7rem;
+    }
+
+    .icon-wrapper svg,
+    .small-panel-tab-menu-button svg,
+    .small-panel-icon-wrapper svg {                               
+        width: 20px;
+        height: 20px;
+    }
+    
+    .submit-button-container button {
+        /* padding: 5px; */
+        font-size: .8rem;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .popup-content {
+        width: 250px;
+    }
+
+    .popup-content h3 {
+        font-size: .8rem;
+    }
+
+    .popup-content h4 {
+        font-size: .75rem;
+    }
+
+    .popup-content ul,
+    .popup-content button {
+        font-size: .7rem;
+    }
+
+    .kpi-box h2 {
+        font-size: 14px;
+    }
+    
+    .kpi-box p {
+        font-size: 16px;
+    }
+
+    .subsection-title {
+        font-size: 16px;
+    }
+
+    .subsection-title i {
+        font-size: 14px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 480px) {
+    .header-row .logo img {
+        width: 120px; /* Smaller logo for mobile */
+    }
+
+    .analysis-insights-top-background {
+        height: 100px;
+    }
+
+    .header-row .h1_heading {
+        font-size: 15px; /* Smaller font size for mobile */
+    }
+
+    .analysis-insights-heading {
+        font-size: 13px;
+    }
+
+    .top-background {
+        height: 75px;
+    }
+
+    .container {
+        max-width: 300px;
+        font-size: 12px;
+    }
+
+    form input[type="email"],
+    form input[type="password"],
+    form input[type="file"],
+    form input[type="date"],
+    form input[type="text"] {
+        font-size: 8px;
+        padding: 4px;
+    }
+
+    form button {
+        font-size: 10px; 
+        padding: 5x;
+    }
+
+    .h1_analysis {
+        font-size: 12px; 
+    }
+
+    .side-panel-new {
+        width: 25px;
+    }
+    
+    .side-panel-new.expanded {
+        width: 250px;
+    }
+
+    .kpi-box h2 {
+        font-size: 10px;
+    }
+    
+    .kpi-box p {
+        font-size: 12px;
+    }
+
+    .subsection-title {
+        font-size: 12px;
+    }
+
+    .subsection-title i {
+        font-size: 10px;
+    }
+}
