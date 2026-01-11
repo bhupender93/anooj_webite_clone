@@ -1,114 +1,80 @@
 /* ============================================================================
- * dashboard_chart_api.js — Scalex Adaptor Integration
+ * dashboard_chart_api.js — STEP-BY-STEP DEBUG VERSION
  * ========================================================================== */
 
-const SCALEX_API_URL =
+console.log("✅ dashboard_chart_api.js LOADED");
+
+/* ---------------------------------------------------------------------------
+ * GLOBAL STORE (DEFINED IMMEDIATELY)
+ * ------------------------------------------------------------------------ */
+window.__SCALEX_DATA__ = {};
+
+/* ---------------------------------------------------------------------------
+ * CONFIG
+ * ------------------------------------------------------------------------ */
+const SCALEX_API =
   "https://scalex-adapter-268453003438.europe-west1.run.app/chart-data";
 
 /* ---------------------------------------------------------------------------
- * Helper: Build request payload
+ * PAYLOAD BUILDER
  * ------------------------------------------------------------------------ */
 function buildPayload(chartName) {
-  const dateRange = JSON.parse(sessionStorage.getItem("dateRange")) || {
-    startDate: "2025-12-01",
-    endDate: "2025-12-31",
-  };
+  const stored = sessionStorage.getItem("dateRange");
+  const parsed = stored ? JSON.parse(stored) : {};
 
   return {
     chartName,
-    dateRange,
+    dateRange: parsed.dateRange || null,
     comparison: false,
   };
 }
 
 /* ---------------------------------------------------------------------------
- * Generic fetcher
+ * FETCH + STORE
  * ------------------------------------------------------------------------ */
-async function fetchChartData(chartName) {
-  const res = await fetch(SCALEX_API_URL, {
+async function fetchAndStore(chartName, key) {
+  console.log("📡 fetching:", chartName);
+
+  const res = await fetch(SCALEX_API, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(buildPayload(chartName)),
   });
 
-  if (!res.ok) {
-    throw new Error(`API failed for ${chartName}`);
+  const json = await res.json();
+  window.__SCALEX_DATA__[key] = json.data;
+
+  console.log("✅ stored:", key);
+}
+
+/* ---------------------------------------------------------------------------
+ * PUBLIC ENTRY POINT (WHAT layout.js EXPECTS)
+ * ------------------------------------------------------------------------ */
+window.refreshPage = async function (pageKey) {
+  console.log("🔁 refreshPage called:", pageKey);
+
+  if (pageKey === "performance-overview") {
+    if (typeof window.renderPerformanceOverviewDetails === "function") {
+      window.renderPerformanceOverviewDetails();
+    }
+    return;
   }
 
-  const json = await res.json();
-  return json.data;
-}
-
-/* ---------------------------------------------------------------------------
- * Channel Analytics – API-powered charts
- * ------------------------------------------------------------------------ */
-
-async function loadChannelCplCacRoas() {
-  return fetchChartData("channel_cpl_cac_roas");
-}
-
-async function loadCampaignRoiBubble() {
-  return fetchChartData("campaign_roi_bubble");
-}
-
-async function loadTouchpointSplit() {
-  return fetchChartData("channel_touchpoint_split");
-}
-
-async function loadAudienceRoas() {
-  return fetchChartData("audience_roas");
-}
-
-async function loadLeadQuality() {
-  return fetchChartData("channel_lead_quality");
-}
-
-async function loadSpendEfficiency() {
-  return fetchChartData("channel_spend_efficiency");
-}
-
-async function loadChannelSnapshot() {
-  return fetchChartData("channel_snapshot_table");
-}
-
-/* ---------------------------------------------------------------------------
- * Page-level loader (Channel Analytics only)
- * ------------------------------------------------------------------------ */
-async function loadChannelAnalyticsCharts() {
-  try {
-    const [
-      cplCacRoas,
-      campaignRoi,
-      touchpointSplit,
-      audienceRoas,
-      leadQuality,
-      spendEfficiency,
-      channelSnapshot,
-    ] = await Promise.all([
-      loadChannelCplCacRoas(),
-      loadCampaignRoiBubble(),
-      loadTouchpointSplit(),
-      loadAudienceRoas(),
-      loadLeadQuality(),
-      loadSpendEfficiency(),
-      loadChannelSnapshot(),
+  if (pageKey === "channel-campaign-analytics") {
+    await Promise.all([
+      fetchAndStore("channel_cpl_cac_roas", "cpl"),
+      fetchAndStore("campaign_roi_bubble", "roi"),
+      fetchAndStore("channel_touchpoint_split", "touchpoint"),
+      fetchAndStore("audience_roas", "audience"),
+      fetchAndStore("channel_lead_quality", "quality"),
+      fetchAndStore("channel_spend_efficiency", "efficiency"),
+      fetchAndStore("channel_snapshot_table", "snapshot"),
     ]);
 
-    // Delegate rendering to existing chart functions
-    renderChannelCplCacRoas(cplCacRoas);
-    renderCampaignRoiBubble(campaignRoi);
-    renderTouchpointSplit(touchpointSplit);
-    renderAudienceRoas(audienceRoas);
-    renderLeadQuality(leadQuality);
-    renderSpendEfficiency(spendEfficiency);
-    renderChannelSnapshot(channelSnapshot);
-
-  } catch (err) {
-    console.error("Channel Analytics API error", err);
+    if (typeof window.renderChannelCampaignDetails === "function") {
+      window.renderChannelCampaignDetails();
+    }
   }
-}
+};
 
-/* ---------------------------------------------------------------------------
- * Export
- * ------------------------------------------------------------------------ */
-window.loadChannelAnalyticsCharts = loadChannelAnalyticsCharts;
+console.log("✅ refreshPage REGISTERED");
