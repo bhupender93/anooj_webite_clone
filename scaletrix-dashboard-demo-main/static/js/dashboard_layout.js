@@ -1,6 +1,14 @@
 /* ============================================================================
  * dashboard_layout.js — FIXED VIEW CONTROLLER (API COMPATIBLE)
+ * Updated: 2026-01-09
  * ========================================================================== */
+
+console.log(
+  "%c[ScaleX] dashboard_layout.js loaded (FIXED VIEW CONTROLLER) – v2026-01-09",
+  "color:#22c55e;font-weight:bold"
+);
+
+window.__SCALEX_LAYOUT_VERSION__ = "2026-01-09";
 
 /* ---------------------------------------------------------------------------
  * SAFE CALL HELPER
