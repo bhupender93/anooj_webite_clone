@@ -404,10 +404,16 @@
         </div>
     </div>
 
-    <!-- Layout JS -->
-    <script src="./static/js/dashboard_layout.js"></script>
-    <script src="./static/js/dashboard_charts.js"></script>
-    <script src="./static/js/dashboard_chart_api.js"></script>
+<!-- Charts FIRST (defines render + modal functions) -->
+<script src="./static/js/dashboard_charts.js?v=1.0.1"></script>
+
+<!-- API layer SECOND -->
+<script src="./static/js/dashboard_chart_api.js?v=1.0.1"></script>
+
+<!-- Layout LAST (uses everything above) -->
+<script src="./static/js/dashboard_layout.js?v=1.0.1"></script>
+
+
 </body>
 
 </html>
