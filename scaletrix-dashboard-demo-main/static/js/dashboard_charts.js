@@ -1,208 +1,35 @@
 /* ============================================================================
- * dashboard_charts.js — Channel Analytics (API-ready)
- * Project: Scalex Adaptor
+ * dashboard_charts.js — DATA-DRIVEN (OLD-REPO COMPATIBLE)
  * ========================================================================== */
 
 /* ---------------------------------------------------------------------------
- * Utility: Destroy existing chart instance (avoid duplicates)
+ * UTILS
  * ------------------------------------------------------------------------ */
-function resetChart(canvasId) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return null;
-
-  const ctx = canvas.getContext("2d");
-  if (canvas._chart) {
-    canvas._chart.destroy();
-  }
-  return ctx;
+function clearDetailCharts() {
+  const container = document.getElementById("detail-charts");
+  if (container) container.innerHTML = "";
 }
 
-/* ============================================================================
- * 1️⃣ Channel-wise CPL · CAC · ROAS
- * ========================================================================== */
-function renderChannelCplCacRoas(apiData) {
-  const ctx = resetChart("channelCplCacRoasChart");
-
-  ctx.canvas._chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: apiData.labels,
-      datasets: apiData.datasets,
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "top" },
-      },
-      scales: {
-        y: { beginAtZero: true },
-      },
-    },
-  });
+function createCanvas(id) {
+  const canvas = document.createElement("canvas");
+  canvas.id = id;
+  canvas.height = 120;
+  return canvas;
 }
 
-/* ============================================================================
- * 2️⃣ Campaign ROI & Incremental ROAS (Bubble / Scatter)
- * ========================================================================== */
-function renderCampaignRoiBubble(apiData) {
-  const ctx = resetChart("campaignRoiBubbleChart");
+/* ---------------------------------------------------------------------------
+ * PERFORMANCE OVERVIEW (UNCHANGED / STATIC)
+ * ------------------------------------------------------------------------ */
+window.renderPerformanceOverviewDetails = function () {
+  clearDetailCharts();
 
-  // API gives labels + datasets, but bubble needs objects
-  const roiDataset = apiData.datasets[0].data.map((roi, i) => ({
-    x: i + 1,
-    y: roi,
-    r: 12,
-    label: apiData.labels[i],
-  }));
+  const container = document.getElementById("detail-charts");
+  if (!container) return;
 
-  ctx.canvas._chart = new Chart(ctx, {
-    type: "bubble",
-    data: {
-      datasets: [
-        {
-          label: "ROI %",
-          data: roiDataset,
-          backgroundColor: "rgba(54, 162, 235, 0.6)",
-        },
-      ],
-    },
-    options: {
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: (ctx) =>
-              `${roiDataset[ctx.dataIndex].label}: ${ctx.raw.y}%`,
-          },
-        },
-      },
-      scales: {
-        x: { display: false },
-        y: { beginAtZero: true },
-      },
-    },
-  });
-}
+  const canvas = createCanvas("creativePerformanceChart");
+  container.appendChild(canvas);
 
-/* ============================================================================
- * 3️⃣ Touch-Point Revenue Split
- * ========================================================================== */
-function renderTouchpointSplit(apiData) {
-  const ctx = resetChart("touchpointSplitChart");
-
-  ctx.canvas._chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: apiData.labels,
-      datasets: apiData.datasets,
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: "top" } },
-      scales: {
-        x: { stacked: true },
-        y: { stacked: true, beginAtZero: true },
-      },
-    },
-  });
-}
-
-/* ============================================================================
- * 4️⃣ Audience Segment ROAS
- * ========================================================================== */
-function renderAudienceRoas(apiData) {
-  const ctx = resetChart("audienceRoasChart");
-
-  ctx.canvas._chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: apiData.labels,
-      datasets: apiData.datasets,
-    },
-    options: {
-      indexAxis: "y",
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { beginAtZero: true },
-      },
-    },
-  });
-}
-
-/* ============================================================================
- * 5️⃣ Lead Quality Score by Channel
- * ========================================================================== */
-function renderLeadQuality(apiData) {
-  const ctx = resetChart("leadQualityChart");
-
-  ctx.canvas._chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: apiData.labels,
-      datasets: apiData.datasets,
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 100,
-        },
-      },
-    },
-  });
-}
-
-/* ============================================================================
- * 6️⃣ Spend Efficiency Index by Channel
- * ========================================================================== */
-function renderSpendEfficiency(apiData) {
-  const ctx = resetChart("spendEfficiencyChart");
-
-  ctx.canvas._chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: apiData.labels,
-      datasets: apiData.datasets,
-    },
-    options: {
-      plugins: { legend: { position: "top" } },
-      scales: {
-        y: { beginAtZero: true, max: 100 },
-      },
-    },
-  });
-}
-
-/* ============================================================================
- * 7️⃣ Channel Performance Snapshot
- * (Rendered as grouped bars for key metrics)
- * ========================================================================== */
-function renderChannelSnapshot(apiData) {
-  const ctx = resetChart("channelSnapshotChart");
-
-  ctx.canvas._chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: apiData.labels,
-      datasets: apiData.datasets,
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: "top" } },
-      scales: {
-        y: { beginAtZero: true },
-      },
-    },
-  });
-}
-
-/* ============================================================================
- * ❌ Creative Performance (STATIC — DO NOT TOUCH)
- * ========================================================================== */
-function renderCreativePerformanceStatic() {
-  const ctx = resetChart("creativePerformanceChart");
-
-  ctx.canvas._chart = new Chart(ctx, {
+  new Chart(canvas.getContext("2d"), {
     type: "line",
     data: {
       labels: ["CTR", "CPC", "Engagement"],
@@ -216,4 +43,111 @@ function renderCreativePerformanceStatic() {
       ],
     },
   });
-}
+};
+
+/* ---------------------------------------------------------------------------
+ * CHANNEL & CAMPAIGN ANALYTICS (API-DRIVEN)
+ * ------------------------------------------------------------------------ */
+window.renderChannelCampaignDetails = function () {
+  const data = window.__SCALEX_DATA__;
+  if (!data) return;
+
+  clearDetailCharts();
+  const container = document.getElementById("detail-charts");
+  if (!container) return;
+
+  // 1️⃣ CPL · CAC · ROAS
+  if (data.cpl) {
+    const c = createCanvas("cplChart");
+    container.appendChild(c);
+
+    new Chart(c.getContext("2d"), {
+      type: "bar",
+      data: data.cpl,
+    });
+  }
+
+  // 2️⃣ Campaign ROI
+  if (data.roi) {
+    const c = createCanvas("roiChart");
+    container.appendChild(c);
+
+    new Chart(c.getContext("2d"), {
+      type: "bar",
+      data: data.roi,
+    });
+  }
+
+  // 3️⃣ Touchpoint Split
+  if (data.touchpoint) {
+    const c = createCanvas("touchpointChart");
+    container.appendChild(c);
+
+    new Chart(c.getContext("2d"), {
+      type: "bar",
+      data: data.touchpoint,
+      options: {
+        scales: {
+          x: { stacked: true },
+          y: { stacked: true },
+        },
+      },
+    });
+  }
+
+  // 4️⃣ Audience ROAS
+  if (data.audience) {
+    const c = createCanvas("audienceChart");
+    container.appendChild(c);
+
+    new Chart(c.getContext("2d"), {
+      type: "bar",
+      data: data.audience,
+      options: { indexAxis: "y" },
+    });
+  }
+
+  // 5️⃣ Lead Quality
+  if (data.quality) {
+    const c = createCanvas("qualityChart");
+    container.appendChild(c);
+
+    new Chart(c.getContext("2d"), {
+      type: "bar",
+      data: data.quality,
+    });
+  }
+
+  // 6️⃣ Spend Efficiency
+  if (data.efficiency) {
+    const c = createCanvas("efficiencyChart");
+    container.appendChild(c);
+
+    new Chart(c.getContext("2d"), {
+      type: "bar",
+      data: data.efficiency,
+    });
+  }
+
+  // 7️⃣ Channel Snapshot
+  if (data.snapshot) {
+    const c = createCanvas("snapshotChart");
+    container.appendChild(c);
+
+    new Chart(c.getContext("2d"), {
+      type: "bar",
+      data: data.snapshot,
+    });
+  }
+};
+
+/* ---------------------------------------------------------------------------
+ * MODAL FUNCTIONS (REQUIRED BY layout.js)
+ * ------------------------------------------------------------------------ */
+window.closeChartModal = function () {
+  const modal = document.getElementById("chart-modal");
+  if (modal) modal.classList.add("hidden");
+};
+
+window.downloadModalChart = function () {};
+window.openChartModalFromCanvas = function () {};
