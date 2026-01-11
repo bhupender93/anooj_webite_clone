@@ -1,29 +1,34 @@
 /* ============================================================================
- * dashboard_layout.js — SAFE, OLD-REPO COMPATIBLE
- * Project: ScaleX Dashboard
+ * dashboard_layout.js — FIXED VIEW CONTROLLER (API COMPATIBLE)
  * ========================================================================== */
 
 /* ---------------------------------------------------------------------------
- * SAFE CALL HELPER (CORE FIX)
+ * SAFE CALL HELPER
  * ------------------------------------------------------------------------ */
-function safeCall(fnName, ...args) {
-    const fn = window[fnName];
-    if (typeof fn === "function") {
-        return fn(...args);
+function safeCall(fn, ...args) {
+    try {
+        if (typeof fn === "function") fn(...args);
+    } catch (e) {
+        console.error("safeCall error:", e);
     }
 }
+
+/* ---------------------------------------------------------------------------
+ * GLOBAL VIEW STATE
+ * ------------------------------------------------------------------------ */
+window.__ACTIVE_VIEW__ = "performance";
 
 /* ---------------------------------------------------------------------------
  * FILTER TOGGLE
  * ------------------------------------------------------------------------ */
 window.toggleFilterSection = function () {
-    const filterContent = document.getElementById("filter-content");
-    const filterArrow = document.getElementById("filter-toggle-arrow");
-    if (!filterContent || !filterArrow) return;
+    const c = document.getElementById("filter-content");
+    const a = document.getElementById("filter-toggle-arrow");
+    if (!c || !a) return;
 
-    const opening = filterContent.classList.contains("hidden");
-    filterContent.classList.toggle("hidden", !opening);
-    filterArrow.setAttribute("data-lucide", opening ? "chevron-up" : "chevron-down");
+    const open = c.classList.contains("hidden");
+    c.classList.toggle("hidden", !open);
+    a.setAttribute("data-lucide", open ? "chevron-up" : "chevron-down");
 
     if (window.lucide) window.lucide.createIcons();
 };
@@ -44,7 +49,6 @@ function storeDateRange(startDate, endDate) {
     };
 
     sessionStorage.setItem(DATE_RANGE_KEY, JSON.stringify(payload));
-    safeCall("refreshPage");
     return payload;
 }
 
@@ -83,76 +87,73 @@ function initializeDateRangePicker() {
         },
         function (s, e) {
             storeDateRange(s, e);
+            renderActiveView();
         }
     );
 }
 
 /* ---------------------------------------------------------------------------
- * PAGE INITIALIZATION (OLD-REPO STYLE)
+ * VIEW SWITCHING
+ * ------------------------------------------------------------------------ */
+function renderActiveView() {
+    if (window.__ACTIVE_VIEW__ === "performance") {
+        safeCall(window.renderPerformanceOverviewDetails);
+    } else {
+        safeCall(window.renderChannelCampaignDetails);
+    }
+}
+
+function switchView(view, headingText) {
+    window.__ACTIVE_VIEW__ = view;
+
+    const heading = document.getElementById("main-heading");
+    if (heading) heading.textContent = headingText;
+
+    renderActiveView();
+}
+
+/* ---------------------------------------------------------------------------
+ * PAGE INIT
  * ------------------------------------------------------------------------ */
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
     initializeDateRangePicker();
 
     const sidebarLinks = document.querySelectorAll(".sidebar-link");
-    const heading = document.getElementById("main-heading");
 
-    function clearActive() {
-        sidebarLinks.forEach(l => l.classList.remove("active"));
-    }
-
-    function getKey(label) {
-        const t = label.toLowerCase();
-        if (t.includes("performance")) return "performance-overview";
-        if (t.includes("channel")) return "channel-campaign-analytics";
-        return "performance-overview";
-    }
-
-    sidebarLinks.forEach(link => {
+    sidebarLinks.forEach((link, idx) => {
         link.addEventListener("click", () => {
-            const label = link.textContent.trim();
-            const key = getKey(label);
-
-            clearActive();
+            sidebarLinks.forEach(l => l.classList.remove("active"));
             link.classList.add("active");
-            if (heading) heading.textContent = label;
 
-            sessionStorage.setItem("activePage", key);
-
-            safeCall("handleAnalysisViewChange", key);
-            safeCall("refreshPage", key);
+            if (idx === 0) {
+                switchView("performance", "Performance Overview");
+            } else {
+                switchView("channel", "Channel & Campaign Analytics");
+            }
         });
     });
 
-    // DEFAULT LOAD (SAFE)
-    safeCall("handleAnalysisViewChange", "performance-overview");
-    safeCall("refreshPage", "performance-overview");
+    // DEFAULT LOAD
+    switchView("performance", "Performance Overview");
 });
 
 /* ---------------------------------------------------------------------------
- * CHART MODAL SAFE BINDINGS
+ * CHART MODAL BINDINGS
  * ------------------------------------------------------------------------ */
 document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("chart-modal");
-    const closeBtn = document.getElementById("chart-modal-close");
-    const pngBtn = document.getElementById("chart-modal-download-png");
-    const pdfBtn = document.getElementById("chart-modal-download-pdf");
 
-    if (closeBtn) {
-        closeBtn.addEventListener("click", () => safeCall("closeChartModal"));
-    }
+    document.getElementById("chart-modal-close")
+        ?.addEventListener("click", () => safeCall(window.closeChartModal));
 
-    if (pngBtn) {
-        pngBtn.addEventListener("click", () => safeCall("downloadModalChart", "png"));
-    }
+    document.getElementById("chart-modal-download-png")
+        ?.addEventListener("click", () => safeCall(window.downloadModalChart, "png"));
 
-    if (pdfBtn) {
-        pdfBtn.addEventListener("click", () => safeCall("downloadModalChart", "pdf"));
-    }
+    document.getElementById("chart-modal-download-pdf")
+        ?.addEventListener("click", () => safeCall(window.downloadModalChart, "pdf"));
 
-    if (modal) {
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) safeCall("closeChartModal");
-        });
-    }
+    modal?.addEventListener("click", (e) => {
+        if (e.target === modal) safeCall(window.closeChartModal);
+    });
 });
