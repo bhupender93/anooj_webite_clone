@@ -1,10 +1,10 @@
 /* ============================================================================
- * dashboard_chart_api.js — HYBRID MODE (STATIC PERF + API CHANNEL)
+ * dashboard_chart_api.js — HYBRID SAFE MODE
  * UPDATED: 2026-01-09
  * ========================================================================== */
 
 console.log(
-  "%c[ScaleX] dashboard_chart_api.js loaded (HYBRID MODE)",
+  "%c[ScaleX] dashboard_chart_api.js loaded (STATIC PERF + API CHANNEL)",
   "color:#22c55e;font-weight:bold"
 );
 
@@ -18,119 +18,100 @@ let CURRENT_PAGE =
   sessionStorage.getItem("activePage") || "performance-overview";
 
 /* ---------------------------------------------------------------------------
- * STATIC DEMO DATA — PERFORMANCE OVERVIEW ONLY
+ * STATIC PERFORMANCE DATA (API-SHAPED)
  * ------------------------------------------------------------------------- */
-function injectPerformanceDemoData() {
+function injectPerformanceStaticData() {
   console.log(
-    "%c[ScaleX] Injecting Performance Overview demo data",
+    "%c[ScaleX] Rendering Performance Overview (STATIC DATA)",
     "color:#38bdf8"
   );
 
-  /* ===== KPI CARDS ===== */
-  updateKpiCards(
-    {
-      currentValue: 1280000,
-      previousValue: 1040000,
-      deltaPercent: 23.1,
-      sparkline: [82000, 86000, 91000, 98000, 104000, 112000, 128000]
+  const mockResponses = {
+    kpi_revenue: {
+      success: true,
+      data: {
+        currentValue: 1280000,
+        previousValue: 1040000,
+        deltaPercent: 23.1,
+        sparkline: [82, 86, 91, 98, 104, 112, 128]
+      }
     },
-    "rev-current",
-    "rev-prev",
-    "rev-change",
-    "rev-chart",
-    "revenue"
-  );
-
-  updateKpiCards(
-    {
-      currentValue: 420000,
-      previousValue: 395000,
-      deltaPercent: 6.3,
-      sparkline: [31000, 32000, 34000, 36000, 38000, 40000, 42000]
+    kpi_ad_spend: {
+      success: true,
+      data: {
+        currentValue: 420000,
+        previousValue: 395000,
+        deltaPercent: 6.3,
+        sparkline: [31, 32, 34, 36, 38, 40, 42]
+      }
     },
-    "spend-current",
-    "spend-prev",
-    "spend-change",
-    "spend-chart",
-    "spend"
-  );
-
-  updateKpiCards(
-    {
-      currentValue: 3.05,
-      previousValue: 2.7,
-      deltaPercent: 13.0,
-      sparkline: [2.2, 2.4, 2.6, 2.8, 2.9, 3.0, 3.05]
+    kpi_roas: {
+      success: true,
+      data: {
+        currentValue: 3.05,
+        previousValue: 2.7,
+        deltaPercent: 13,
+        sparkline: [2.2, 2.4, 2.6, 2.8, 2.9, 3.0, 3.05]
+      }
     },
-    "roas-current",
-    "roas-prev",
-    "roas-change",
-    "roas-chart",
-    "roas"
-  );
-
-  updateKpiCards(
-    {
-      currentValue: 205,
-      previousValue: 170,
-      deltaPercent: 20.6,
-      sparkline: [150, 158, 165, 175, 185, 195, 205]
+    kpi_roi: {
+      success: true,
+      data: {
+        currentValue: 205,
+        previousValue: 170,
+        deltaPercent: 20.6,
+        sparkline: [150, 158, 165, 175, 185, 195, 205]
+      }
     },
-    "roi-current",
-    "roi-prev",
-    "roi-change",
-    "roi-chart",
-    "roi"
-  );
 
-  /* ===== DETAIL CHARTS ===== */
+    perf_funnel_by_channel: {
+      success: true,
+      data: {
+        labels: ["Spend", "Revenue", "ROI", "ROAS"],
+        datasets: [
+          { label: "Meta", data: [450000, 1350000, 2.0, 3.0] },
+          { label: "Google", data: [600000, 2200000, 2.7, 3.7] },
+          { label: "LinkedIn", data: [300000, 900000, 2.0, 3.0] }
+        ]
+      }
+    },
 
-  updatePerfFunnelFromAPI({
-    labels: ["Spend", "Revenue", "ROI", "ROAS"],
-    datasets: [
-      { label: "Meta", data: [450000, 1350000, 2.0, 3.0] },
-      { label: "Google", data: [600000, 2200000, 2.7, 3.7] },
-      { label: "LinkedIn", data: [300000, 900000, 2.0, 3.0] }
-    ]
-  });
+    perf_pipeline_value: {
+      success: true,
+      data: {
+        labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+        datasets: [{ data: [32, 36, 41, 47, 52, 61] }]
+      }
+    },
 
-  updateBlendedPaidCACFromAPI({
-    labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
-    datasets: [
-      { label: "Blended CAC", data: [7200, 7000, 6900, 6700, 6500, 6300] },
-      { label: "Paid CAC", data: [8200, 8100, 7900, 7700, 7600, 7400] }
-    ]
-  });
+    perf_ltv_cac_ratio: {
+      success: true,
+      data: {
+        ltv: 180000,
+        cac: 52000,
+        ratio: 3.5,
+        status: "healthy"
+      }
+    },
 
-  updateCacTrendByChannelFromAPI({
-    labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
-    datasets: [
-      { label: "Meta CAC", data: [6800, 6600, 6400, 6300, 6200, 6100] },
-      { label: "Google CAC", data: [7200, 7000, 6900, 6800, 6700, 6600] },
-      { label: "LinkedIn CAC", data: [9500, 9300, 9100, 9000, 8900, 8800] }
-    ]
-  });
+    perf_top_channels_roas: {
+      success: true,
+      data: {
+        labels: ["Affiliate", "Google", "Meta", "Display", "LinkedIn"],
+        datasets: [{ data: [4.6, 3.8, 3.1, 2.4, 2.1] }]
+      }
+    }
+  };
 
-  updatePipelineValueFromAPI({
-    labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
-    datasets: [{ data: [3200000, 3600000, 4100000, 4700000, 5200000, 6100000] }]
-  });
-
-  updateLtvCacRatioFromAPI({
-    ltv: 180000,
-    cac: 52000,
-    ratio: 3.5,
-    status: "healthy"
-  });
-
-  updateTopChannelsRoasFromAPI({
-    labels: ["Affiliate", "Google Search", "Meta", "Display", "LinkedIn"],
-    datasets: [{ data: [4.6, 3.8, 3.1, 2.4, 2.1] }]
+  Object.entries(mockResponses).forEach(([chartId, response]) => {
+    if (window.renderChartFromAPI) {
+      window.renderChartFromAPI(chartId, response);
+    }
   });
 }
 
 /* ---------------------------------------------------------------------------
- * API HELPERS
+ * API FETCH
  * ------------------------------------------------------------------------- */
 async function fetchChartData(chartName) {
   try {
@@ -147,7 +128,7 @@ async function fetchChartData(chartName) {
 }
 
 /* ---------------------------------------------------------------------------
- * PAGE REFRESH
+ * PAGE REFRESH (SINGLE SOURCE OF TRUTH)
  * ------------------------------------------------------------------------- */
 async function refreshPage(pageName = CURRENT_PAGE) {
   CURRENT_PAGE = pageName;
@@ -158,13 +139,11 @@ async function refreshPage(pageName = CURRENT_PAGE) {
     "color:#facc15"
   );
 
-  /* PERFORMANCE OVERVIEW → STATIC */
   if (CURRENT_PAGE === "performance-overview") {
-    injectPerformanceDemoData();
+    injectPerformanceStaticData();
     return;
   }
 
-  /* CHANNEL & CAMPAIGN → API */
   const charts = [
     "channel_cpl_cac_roas",
     "campaign_roi_bubble",
