@@ -25,7 +25,7 @@ const SCALEX_API_BASE_PERF =
 
 // 🔹 Channel & Campaign Analytics (real adaptor)
 const SCALEX_API_BASE_CHANNEL =
-  "https://scalex-adapter-268453003438.europe-west1.run.app/api/v1/chart";
+  "https://scalex-adapter-268453003438.europe-west1.run.app/chart-data";
 
 let CURRENT_PAGE =
   sessionStorage.getItem("activePage") || "performance-overview";
@@ -89,7 +89,7 @@ async function fetchChartData(chartId) {
 
   // ✅ Correct endpoints
   const url = isChannelAnalytics
-    ? "https://scalex-adapter-268453003438.europe-west1.run.app"
+    ? "https://scalex-adapter-268453003438.europe-west1.run.app/chart-data"
     : `https://website-test-268453003438.europe-west1.run.app/api/v1/chart/${chartId}`;
 
   // ✅ Correct payloads
