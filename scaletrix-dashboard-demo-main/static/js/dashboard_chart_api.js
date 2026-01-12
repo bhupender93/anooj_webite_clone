@@ -84,15 +84,18 @@ function buildPayload() {
 async function fetchChartData(chartId) {
   const basePayload = buildPayload();
 
-  const isChannelPage = CURRENT_PAGE === "channel-campaign-analytics";
+  const isChannelAnalytics =
+    CURRENT_PAGE === "channel-campaign-analytics";
 
-  const url = isChannelPage
-    ? "https://scalex-adapter-268453003438.europe-west1.run.app/"
+  // ✅ Correct endpoints
+  const url = isChannelAnalytics
+    ? "https://scalex-adapter-268453003438.europe-west1.run.app"
     : `https://website-test-268453003438.europe-west1.run.app/api/v1/chart/${chartId}`;
 
-  const payload = isChannelPage
+  // ✅ Correct payloads
+  const payload = isChannelAnalytics
     ? {
-        chart_name: chartId,   // ✅ adaptor expects this
+        chart_name: chartId,   // adaptor contract
         ...basePayload
       }
     : basePayload;
@@ -100,7 +103,9 @@ async function fetchChartData(chartId) {
   try {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(payload)
     });
 
@@ -108,6 +113,7 @@ async function fetchChartData(chartId) {
     try {
       json = await res.json();
     } catch {
+      console.error(`[ScaleX] Invalid JSON for ${chartId}`);
       return { success: false, error: "Invalid JSON from server" };
     }
 
@@ -119,7 +125,7 @@ async function fetchChartData(chartId) {
     return json;
   } catch (err) {
     console.error(`[ScaleX] Network error (${chartId})`, err);
-    return { success: false, error: err?.message || err };
+    return { success: false, error: err?.message || String(err) };
   }
 }
 
