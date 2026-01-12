@@ -5,7 +5,7 @@
  * ========================================================================== */
 
 console.log(
-  "%c[ScaleX] dashboard_chart_api.js loaded",
+  "%c[ScaleX] dashboard_chart_api.js loaded (Foundation)",
   "color:#22c55e;font-weight:bold"
 );
 
