@@ -1,136 +1,147 @@
 /* ============================================================================
  * dashboard_chart_api.js
- * MODE: STATIC Performance Overview + API Channel Analytics
- * STRUCTURE: IDENTICAL to working repo
+ *
+ * API integration layer for chart data fetching and caching
+ *
+ * UPDATED: 2026-01-12
+ * ENDPOINT: website-test-268453003438.europe-west1.run.app
+ *
  * ========================================================================== */
 
 console.log(
-  "%c[ScaleX] dashboard_chart_api.js loaded (Foundation)",
+  "%c[ScaleX] dashboard_chart_api.js LOADED (website-test endpoint)",
   "color:#22c55e;font-weight:bold"
 );
 
 /* ---------------------------------------------------------------------------
- * SECTION 1: CONFIG
- * ------------------------------------------------------------------------- */
+ * SECTION 1: API CONFIGURATION & CONSTANTS
+ * ---------------------------------------------------------------------------*/
 
+// const SCALEX_API_BASE = "http://localhost:8000/api/v1/chart";
 const SCALEX_API_BASE =
-  "https://scalex-adapter-268453003438.europe-west1.run.app/chart-data";
+  "https://website-test-268453003438.europe-west1.run.app/api/v1/chart";
 
 let CURRENT_PAGE =
   sessionStorage.getItem("activePage") || "performance-overview";
 
 /* ---------------------------------------------------------------------------
- * SECTION 2: STATIC PERFORMANCE PAYLOADS (API-SHAPED)
- * ------------------------------------------------------------------------- */
+ * SECTION 2: FILTER MANAGEMENT
+ * ---------------------------------------------------------------------------*/
 
-const STATIC_PERFORMANCE_DATA = {
-  kpi_revenue: {
-    success: true,
-    data: {
-      currentValue: 1280000,
-      previousValue: 1040000,
-      deltaPercent: 23.1,
-      sparkline: [82, 86, 91, 98, 104, 112, 128]
-    }
-  },
-  kpi_ad_spend: {
-    success: true,
-    data: {
-      currentValue: 420000,
-      previousValue: 395000,
-      deltaPercent: 6.3,
-      sparkline: [31, 32, 34, 36, 38, 40, 42]
-    }
-  },
-  kpi_roas: {
-    success: true,
-    data: {
-      currentValue: 3.05,
-      previousValue: 2.7,
-      deltaPercent: 13,
-      sparkline: [2.2, 2.4, 2.6, 2.8, 2.9, 3.0, 3.05]
-    }
-  },
-  kpi_roi: {
-    success: true,
-    data: {
-      currentValue: 205,
-      previousValue: 170,
-      deltaPercent: 20.6,
-      sparkline: [150, 158, 165, 175, 185, 195, 205]
-    }
-  },
+function getStoredFilters() {
+  let stored = sessionStorage.getItem("dateRange");
+  let parsed = stored ? JSON.parse(stored) : null;
 
-  perf_funnel_by_channel: {
-    success: true,
-    data: {
-      labels: ["Spend", "Revenue", "ROAS", "ROI"],
-      datasets: [
-        { label: "Meta", data: [260000, 1050000, 2.8, 180] },
-        { label: "Google", data: [420000, 1550000, 3.1, 210] },
-        { label: "LinkedIn", data: [180000, 820000, 3.5, 240] }
-      ]
-    }
-  },
-
-  perf_pipeline_value: {
-    success: true,
-    data: {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
-      datasets: [{ data: [32, 36, 41, 47, 52, 61] }]
-    }
-  },
-
-  perf_ltv_cac_ratio: {
-    success: true,
-    data: {
-      ltv: 180000,
-      cac: 52000,
-      ratio: 3.5,
-      status: "healthy"
-    }
-  },
-
-  perf_top_channels_roas: {
-    success: true,
-    data: {
-      labels: ["Affiliate", "Google", "Meta", "Display", "LinkedIn"],
-      datasets: [{ data: [4.6, 3.8, 3.1, 2.4, 2.1] }]
-    }
-  }
-};
+  return {
+    dateRange: parsed?.dateRange || null,
+    comparison: parsed?.comparison || false,
+    timestamp: parsed?.timestamp || new Date().toISOString(),
+    devices: sessionStorage.getItem("filter_devices") || null,
+    channels: sessionStorage.getItem("filter_channels") || null,
+    locations: sessionStorage.getItem("filter_locations") || null
+  };
+}
 
 /* ---------------------------------------------------------------------------
- * SECTION 3: FETCH CHART DATA (SINGLE OVERRIDE POINT)
- * ------------------------------------------------------------------------- */
+ * SECTION 3: API PAYLOAD CONSTRUCTION
+ * ---------------------------------------------------------------------------*/
+
+function buildPayload() {
+  const f = getStoredFilters();
+
+  return {
+    dateRange: f.dateRange,
+    comparison: f.comparison,
+    filters: {
+      devices: f.devices,
+      channels: f.channels,
+      locations: f.locations
+    },
+    timestamp: f.timestamp
+  };
+}
+
+/* ---------------------------------------------------------------------------
+ * SECTION 4: API REQUEST & RESPONSE HANDLING
+ * ---------------------------------------------------------------------------*/
 
 async function fetchChartData(chartId) {
-  // 🔹 STATIC MODE FOR PERFORMANCE OVERVIEW
-  if (CURRENT_PAGE === "performance-overview") {
-    if (STATIC_PERFORMANCE_DATA[chartId]) {
-      console.debug("[ScaleX][STATIC]", chartId);
-      return STATIC_PERFORMANCE_DATA[chartId];
-    }
-    return { success: false };
-  }
+  const payload = buildPayload();
 
-  // 🔹 API MODE FOR CHANNEL & CAMPAIGN
   try {
-    const res = await fetch(SCALEX_API_BASE, {
+    const res = await fetch(`${SCALEX_API_BASE}/${chartId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chartName: chartId })
+      body: JSON.stringify(payload)
     });
-    return await res.json();
+
+    let json;
+    try {
+      json = await res.json();
+    } catch (e) {
+      console.error(`API JSON parse error (${chartId}):`, e);
+      return { success: false, error: "Invalid JSON from server" };
+    }
+
+    if (!res.ok) {
+      console.error(`API HTTP error (${chartId}):`, res.status, json);
+      return { success: false, error: json || res.statusText };
+    }
+
+    return json;
   } catch (err) {
-    console.error("[ScaleX] API error:", chartId, err);
-    return { success: false };
+    console.error(`API Error (${chartId}):`, err);
+    return { success: false, error: err?.message || String(err) };
   }
 }
 
 /* ---------------------------------------------------------------------------
- * SECTION 4: PAGE → CHART MAP (UNCHANGED)
- * ------------------------------------------------------------------------- */
+ * SECTION 5: PAGE REFRESH
+ * ---------------------------------------------------------------------------*/
+
+window.showLoader = function () {
+  const el = document.getElementById("loader");
+  if (el) el.classList.remove("hidden");
+};
+
+window.hideLoader = function () {
+  const el = document.getElementById("loader");
+  if (el) el.classList.add("hidden");
+};
+
+async function refreshPage(pageName = CURRENT_PAGE) {
+  CURRENT_PAGE = pageName;
+  sessionStorage.setItem("activePage", CURRENT_PAGE);
+
+  if (window.showLoader) window.showLoader();
+
+  try {
+    const chartList = getChartsForPage(pageName);
+
+    const promises = chartList.map(chartId =>
+      fetchChartData(chartId).then(response => ({ chartId, response }))
+    );
+
+    const results = await Promise.allSettled(promises);
+
+    for (const res of results) {
+      if (res.status === "fulfilled") {
+        const { chartId, response } = res.value;
+        if (window.renderChartFromAPI) {
+          window.renderChartFromAPI(chartId, response);
+        }
+      }
+    }
+  } finally {
+    if (window.hideLoader) window.hideLoader();
+  }
+}
+
+window.refreshPage = refreshPage;
+
+/* ---------------------------------------------------------------------------
+ * SECTION 6: PAGE-TO-CHART MAPPING
+ * ---------------------------------------------------------------------------*/
 
 function getChartsForPage(page) {
   if (page === "performance-overview") {
@@ -172,31 +183,104 @@ function getChartsForPage(page) {
 }
 
 /* ---------------------------------------------------------------------------
- * SECTION 5: REFRESH PAGE (UNCHANGED)
- * ------------------------------------------------------------------------- */
+ * SECTION 8: API RENDER DISPATCHER
+ * ---------------------------------------------------------------------------*/
 
-async function refreshPage(pageName = CURRENT_PAGE) {
-  CURRENT_PAGE = pageName;
-  sessionStorage.setItem("activePage", CURRENT_PAGE);
+window.renderChartFromAPI = function renderChartFromAPI(chartId, response) {
+  console.debug("📊 renderChartFromAPI →", chartId, response);
 
-  console.log("[ScaleX] refreshPage →", CURRENT_PAGE);
-
-  const chartList = getChartsForPage(CURRENT_PAGE);
-
-  for (const chartId of chartList) {
-    const response = await fetchChartData(chartId);
-    if (window.renderChartFromAPI) {
-      window.renderChartFromAPI(chartId, response);
-    }
+  if (!response || response.success === false) {
+    console.warn(`Chart ${chartId} failed`, response?.error);
+    return;
   }
-}
 
-window.refreshPage = refreshPage;
+  const data = response.data || {};
 
-/* ---------------------------------------------------------------------------
- * SECTION 6: INITIAL LOAD
- * ------------------------------------------------------------------------- */
+  switch (chartId) {
+    case "kpi_revenue":
+      updateKpiCards(data, "rev-current", "rev-prev", "rev-change", "rev-chart", "revenue");
+      break;
+    case "kpi_ad_spend":
+      updateKpiCards(data, "spend-current", "spend-prev", "spend-change", "spend-chart", "spend");
+      break;
+    case "kpi_roas":
+      updateKpiCards(data, "roas-current", "roas-prev", "roas-change", "roas-chart", "roas");
+      break;
+    case "kpi_roi":
+      updateKpiCards(data, "roi-current", "roi-prev", "roi-change", "roi-chart", "roi");
+      break;
 
-document.addEventListener("DOMContentLoaded", () => {
-  refreshPage(CURRENT_PAGE);
-});
+    case "alert_performance_gain":
+      updateSmartAlertCard("alert-card-performance-gain", "Performance Gain", data);
+      break;
+    case "alert_channel_mix":
+      updateSmartAlertCard("alert-card-channel-mix", "Channel Mix Efficiency", data);
+      break;
+    case "alert_budget_reallocation":
+      updateSmartAlertCard("alert-card-budget-risk", "Budget / Risk", data);
+      break;
+
+    case "perf_funnel_by_channel":
+      updatePerfFunnelFromAPI(data);
+      break;
+    case "perf_cac_blended_vs_paid":
+      updateBlendedPaidCACFromAPI(data);
+      break;
+    case "perf_cac_trend_by_channel":
+      updateCacTrendByChannelFromAPI(data);
+      break;
+    case "perf_paid_roi_by_stage":
+      updatePaidRoiByStageFromAPI(data);
+      break;
+    case "perf_pipeline_value":
+      updatePipelineValueFromAPI(data);
+      break;
+    case "perf_ltv_cac_ratio":
+      updateLtvCacRatioFromAPI(data);
+      break;
+    case "perf_ltv_by_cohort":
+      updateLtvByCohortFromAPI(data);
+      break;
+    case "perf_attribution_accuracy":
+      updateAttributionAccuracyFromAPI(data);
+      break;
+    case "perf_top_channels_roas":
+      updateTopChannelsRoasFromAPI(data);
+      break;
+    case "perf_new_vs_repeat_mix":
+      updateNewVsRepeatMixFromAPI(data);
+      break;
+
+    case "channel_cpl_cac_roas":
+      updateChannelCplCacRoasFromAPI(data);
+      break;
+    case "campaign_roi_bubble":
+      updateCampaignRoiBubbleFromAPI(data);
+      break;
+    case "channel_touchpoint_split":
+      updateChannelTouchpointSplitFromAPI(data);
+      break;
+    case "audience_roas":
+      updateAudienceRoasFromAPI(data);
+      break;
+    case "channel_lead_quality":
+      updateChannelLeadQualityFromAPI(data);
+      break;
+    case "channel_spend_efficiency":
+      updateChannelSpendEfficiencyFromAPI(data);
+      break;
+    case "creative_perf_tiles":
+      updateCreativePerfTilesFromAPI(data);
+      break;
+    case "channel_snapshot_table":
+      updateChannelSnapshotTableFromAPI(data);
+      break;
+
+    default:
+      console.warn(`No renderer implemented for chartId="${chartId}"`);
+  }
+};
+
+/* ============================================================================
+ * END OF dashboard_chart_api.js
+ * ========================================================================== */
