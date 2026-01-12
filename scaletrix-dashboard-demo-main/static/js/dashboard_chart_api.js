@@ -82,11 +82,23 @@ function buildPayload() {
  * ---------------------------------------------------------------------------*/
 
 async function fetchChartData(chartId) {
-  const payload = buildPayload();
-  const apiBase = getApiBaseForPage(CURRENT_PAGE);
+  const basePayload = buildPayload();
+
+  const isChannelPage = CURRENT_PAGE === "channel-campaign-analytics";
+
+  const url = isChannelPage
+    ? "https://scalex-adapter-268453003438.europe-west1.run.app/"
+    : `https://website-test-268453003438.europe-west1.run.app/api/v1/chart/${chartId}`;
+
+  const payload = isChannelPage
+    ? {
+        chart_name: chartId,   // ✅ adaptor expects this
+        ...basePayload
+      }
+    : basePayload;
 
   try {
-    const res = await fetch(`${apiBase}/${chartId}`, {
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -95,22 +107,22 @@ async function fetchChartData(chartId) {
     let json;
     try {
       json = await res.json();
-    } catch (e) {
-      console.error(`API JSON parse error (${chartId}):`, e);
+    } catch {
       return { success: false, error: "Invalid JSON from server" };
     }
 
     if (!res.ok) {
-      console.error(`API HTTP error (${chartId}):`, res.status, json);
-      return { success: false, error: json || res.statusText };
+      console.error(`[ScaleX] API error (${chartId})`, json);
+      return { success: false, error: json };
     }
 
     return json;
   } catch (err) {
-    console.error(`API Error (${chartId}):`, err);
-    return { success: false, error: err?.message || String(err) };
+    console.error(`[ScaleX] Network error (${chartId})`, err);
+    return { success: false, error: err?.message || err };
   }
 }
+
 
 /* ---------------------------------------------------------------------------
  * SECTION 5: PAGE REFRESH
