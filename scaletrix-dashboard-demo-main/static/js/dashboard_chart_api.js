@@ -95,7 +95,7 @@ async function fetchChartData(chartId) {
   // ✅ Correct payloads
   const payload = isChannelAnalytics
     ? {
-        chart_name: chartId,   // adaptor contract
+        chartName: chartId,   // adaptor contract
         ...basePayload
       }
     : basePayload;
